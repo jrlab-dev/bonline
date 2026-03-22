@@ -280,12 +280,23 @@
     /* ② Slide-in for blockquotes (left → center) */
     .slide-in {
       opacity: 0;
-      transform: translateX(-30px);
-      transition: opacity 1.2s ease, transform 1.2s ease;
+      transform: translateX(-40px);
+      transition: opacity 1.8s ease, transform 1.8s ease;
     }
     .slide-in.visible {
       opacity: 1;
       transform: none;
+    }
+
+    /* ④ Parallax ocean background */
+    #parallax-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 90% 60% at 35% var(--py, 15%), rgba(0, 60, 110, 0.14) 0%, transparent 65%),
+        radial-gradient(ellipse 60% 80% at 72% var(--py2, 85%), rgba(0, 35, 80, 0.09) 0%, transparent 60%);
     }
 
     /* ③ Dark overlay for chapter transitions */
@@ -314,6 +325,9 @@
 
   <!-- ③ Dark overlay for chapter transitions -->
   <div id="chapter-overlay"></div>
+
+  <!-- ④ Parallax ocean background -->
+  <div id="parallax-bg"></div>
 
   <!-- Header -->
   <header class="site-header" id="site-header">
@@ -515,12 +529,15 @@
     });
     paraEls.forEach(el => paraObs.observe(el));
 
-    // ④ Parallax: chapter background numbers drift slower than scroll
+    // ④ Parallax ocean background: two gradient lights drift in opposite directions
+    const parallaxBg = document.getElementById('parallax-bg');
+    const totalScroll = () => Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
     window.addEventListener('scroll', () => {
-      document.querySelectorAll('.chapter__bg-num').forEach(num => {
-        const rect = num.closest('.chapter').getBoundingClientRect();
-        num.style.transform = `translateY(${rect.top * 0.1}px)`;
-      });
+      const pct = window.scrollY / totalScroll();
+      const py  = 10 + pct * 70;  // top light: 10% → 80% (drifts downward)
+      const py2 = 90 - pct * 65;  // bottom light: 90% → 25% (drifts upward)
+      parallaxBg.style.setProperty('--py',  py  + '%');
+      parallaxBg.style.setProperty('--py2', py2 + '%');
     }, { passive: true });
 
     navBtns.forEach(btn => {
