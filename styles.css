@@ -68,6 +68,27 @@ ul  { list-style: none; }
   background: var(--gold-lt);
 }
 
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+.btn--ghost:hover {
+  background: rgba(201, 169, 110, 0.12);
+}
+
+.concept-villa-link {
+  margin-top: 2.5rem;
+  text-align: center;
+}
+.concept-villa-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: #888;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
 .fade-in {
   opacity: 0;
   transform: translateY(28px);
