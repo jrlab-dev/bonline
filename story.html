@@ -276,12 +276,44 @@
       .chapter__body p { font-size: 14px; line-height: 2.2; }
       .chapter__quote { font-size: 17px; }
     }
+
+    /* ② Slide-in for blockquotes (left → center) */
+    .slide-in {
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+    .slide-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ③ Dark overlay for chapter transitions */
+    #chapter-overlay {
+      position: fixed;
+      inset: 0;
+      background: #09090f;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #chapter-overlay.flash {
+      animation: darkFlash 0.75s ease forwards;
+    }
+    @keyframes darkFlash {
+      0%   { opacity: 0; }
+      30%  { opacity: 0.45; }
+      100% { opacity: 0; }
+    }
   </style>
 </head>
 <body>
 
   <!-- Reading progress bar -->
   <div class="read-progress" id="readProgress"></div>
+
+  <!-- ③ Dark overlay for chapter transitions -->
+  <div id="chapter-overlay"></div>
 
   <!-- Header -->
   <header class="site-header" id="site-header">
@@ -330,7 +362,7 @@
           <p class="fade-in" style="transition-delay:0s">慎太郎が初めて奄美大島に足を踏み入れたのは、妻の実家を訪ねるためだった。</p>
           <p class="fade-in" style="transition-delay:.3s">抜けるような青い海。深い森の緑。どこか懐かしい、でも見たことのない風景。<br>
           島はただ美しいだけでなく、そこに暮らす人々の温かさごと、彼の心に飛び込んできた。</p>
-          <blockquote class="chapter__quote fade-in" style="transition-delay:.6s">「この場所を、もっと多くの人に知ってほしい。」</blockquote>
+          <blockquote class="chapter__quote slide-in" style="transition-delay:.6s">「この場所を、もっと多くの人に知ってほしい。」</blockquote>
           <p class="fade-in" style="transition-delay:.9s">同時に、目を背けられない現実もあった。若者が島を出ていく。にぎわいが薄れていく。島が少しずつ、静かになっていく。</p>
           <p class="fade-in" style="transition-delay:1.2s">帰り道、慎太郎の胸には何かが燻っていた。</p>
         </div>
@@ -363,7 +395,7 @@
           <p class="fade-in" style="transition-delay:0s">転機は、一つの出会いから始まった。</p>
           <p class="fade-in" style="transition-delay:.3s">父の知り合いで、慎太郎と同い年の杉山涼介。営業職として数多くの経営者と接してきた、人脈と行動力の男だ。父・憲太郎はずっと思っていた。「息子には経営を学んでほしい。そして杉山と一緒にやったら面白いんじゃないか」と。</p>
           <p class="fade-in" style="transition-delay:.6s">話はみるみる広がった。共通の知り合いである宮越も加わり、3人で語り合う夜が続いた。</p>
-          <blockquote class="chapter__quote fade-in" style="transition-delay:.9s">「ヴィラをやろう。」</blockquote>
+          <blockquote class="chapter__quote slide-in" style="transition-delay:.9s">「ヴィラをやろう。」</blockquote>
           <p class="fade-in" style="transition-delay:1.2s">杉山の知り合いに、宮古島でヴィラを経営している人がいた。その話を聞いた慎太郎の脳裏に、あの島の景色が蘇った。奄美大島だ。あの場所でやれば、きっと届く。</p>
           <p class="fade-in" style="transition-delay:1.5s">加藤と正次郎も加わり、プロジェクトが動き始めた。</p>
         </div>
@@ -381,7 +413,7 @@
           <p class="fade-in" style="transition-delay:.3s">でも、それでいいと思っている。</p>
           <p class="fade-in" style="transition-delay:.6s">この挑戦自体が、私たちの学びの場だから。転びながら、迷いながら、それでも前に進む姿を、ありのままに見せていきたい。</p>
           <p class="fade-in" style="transition-delay:.9s">奄美大島の良さを届けたい。島を訪れる人を増やしたい。そして、この島と関わるすべての人に、「来て良かった」と思ってもらいたい。</p>
-          <blockquote class="chapter__quote fade-in" style="transition-delay:1.2s">その一心で、動いている。</blockquote>
+          <blockquote class="chapter__quote slide-in" style="transition-delay:1.2s">その一心で、動いている。</blockquote>
         </div>
       </div>
     </section>
@@ -395,7 +427,7 @@
           <p class="fade-in" style="transition-delay:0s">奄美大島の皆さんに、一緒に島を盛り上げてほしい。<br>あなたの知恵を、声を、力を貸してほしい。</p>
           <p class="fade-in" style="transition-delay:.3s">島の外にいる人には、まずこの場所を見に来てほしい。<br>島の空気を吸って、海を見て、この島の本当の姿を感じてほしい。</p>
           <p class="fade-in" style="transition-delay:.6s">応援してくれるだけでもいい。見守っていてくれるだけでもいい。<br>あなたの存在が、この物語を動かす力になる。</p>
-          <blockquote class="chapter__quote fade-in" style="transition-delay:.9s">まずは、声をかけてください。</blockquote>
+          <blockquote class="chapter__quote slide-in" style="transition-delay:.9s">まずは、声をかけてください。</blockquote>
           <div class="chapter__cta-actions">
             <a href="mailto:info@bonline-project.jp" class="btn btn--primary">メールで連絡する</a>
             <a href="index.html" class="chapter__back-link">&#8592; トップページへ戻る</a>
@@ -439,8 +471,11 @@
     }, { passive: true });
 
     // ---- Chapter Indicator ----
-    const chapters = document.querySelectorAll('.chapter');
-    const navBtns  = document.querySelectorAll('.chapter-nav button');
+    const chapters    = document.querySelectorAll('.chapter');
+    const navBtns     = document.querySelectorAll('.chapter-nav button');
+    const chOverlay   = document.getElementById('chapter-overlay');
+    let overlayEnabled = false;
+    setTimeout(() => { overlayEnabled = true; }, 900);
 
     const chObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -449,6 +484,13 @@
           navBtns.forEach(b => b.classList.remove('active'));
           const active = document.querySelector(`.chapter-nav button[data-chapter="${ch}"]`);
           if (active) active.classList.add('active');
+
+          // ③ Dark overlay flash on chapter transition
+          if (overlayEnabled) {
+            chOverlay.classList.remove('flash');
+            void chOverlay.offsetWidth; // reflow to restart animation
+            chOverlay.classList.add('flash');
+          }
         }
       });
     }, {
@@ -459,7 +501,7 @@
     chapters.forEach(ch => chObs.observe(ch));
 
     // ---- 段落ごとのフェードイン（専用Observer・閾値を低く設定）----
-    const paraEls = document.querySelectorAll('.chapter__body .fade-in');
+    const paraEls = document.querySelectorAll('.chapter__body .fade-in, .chapter__body .slide-in');
     const paraObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -472,6 +514,14 @@
       rootMargin: '0px 0px 0px 0px'
     });
     paraEls.forEach(el => paraObs.observe(el));
+
+    // ④ Parallax: chapter background numbers drift slower than scroll
+    window.addEventListener('scroll', () => {
+      document.querySelectorAll('.chapter__bg-num').forEach(num => {
+        const rect = num.closest('.chapter').getBoundingClientRect();
+        num.style.transform = `translateY(${rect.top * 0.1}px)`;
+      });
+    }, { passive: true });
 
     navBtns.forEach(btn => {
       btn.addEventListener('click', () => {
