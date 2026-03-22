@@ -874,7 +874,7 @@ ul  { list-style: none; }
 }
 .page-hero__sub {
   font-size: 14px;
-  color: var(--muted);
+  color: rgba(226,226,230,.8);
   line-height: 2;
 }
 
@@ -943,8 +943,8 @@ ul  { list-style: none; }
 .compare-note {
   display: block;
   font-family: var(--ff-body);
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 12px;
+  color: rgba(226,226,230,.7);
   font-weight: 300;
   line-height: 1.6;
 }
@@ -980,7 +980,7 @@ ul  { list-style: none; }
 }
 .data-block__desc {
   font-size: 13px;
-  color: var(--muted);
+  color: rgba(226,226,230,.75);
   line-height: 1.9;
   margin-bottom: 24px;
 }
@@ -993,7 +993,7 @@ ul  { list-style: none; }
   align-items: center;
   gap: 12px;
 }
-.bar-label { font-size: 12px; color: var(--muted); }
+.bar-label { font-size: 12px; color: rgba(226,226,230,.75); }
 .bar-wrap {
   height: 6px;
   background: rgba(255,255,255,.06);
@@ -1007,8 +1007,8 @@ ul  { list-style: none; }
   transition: width 1.2s ease;
 }
 .bar-fill--low { background: rgba(201,169,110,.4); }
-.bar-value { font-family: var(--ff-en); font-size: 13px; color: var(--text); text-align: right; }
-.data-note { font-size: 11px; color: var(--muted); font-style: italic; }
+.bar-value { font-family: var(--ff-en); font-size: 13px; color: var(--white); text-align: right; }
+.data-note { font-size: 11px; color: rgba(226,226,230,.5); font-style: italic; }
 
 /* ミニスタット */
 .mini-stats {
@@ -1035,7 +1035,7 @@ ul  { list-style: none; }
   margin-bottom: 6px;
   line-height: 1.6;
 }
-.mini-stat__note { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.mini-stat__note { font-size: 11px; color: rgba(226,226,230,.65); line-height: 1.6; }
 
 /* Coming Soon */
 .coming-grid {
@@ -1066,7 +1066,7 @@ ul  { list-style: none; }
 }
 .coming-card__text {
   font-size: 13px;
-  color: var(--muted);
+  color: rgba(226,226,230,.75);
   line-height: 1.9;
   margin-bottom: 16px;
 }
