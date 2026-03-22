@@ -71,7 +71,7 @@ ul  { list-style: none; }
 .fade-in {
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 5.5s ease, transform 5.5s ease;
+  transition: opacity 3s ease, transform 3s ease;
 }
 .fade-in.visible {
   opacity: 1;
