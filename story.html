@@ -277,6 +277,17 @@
       .chapter__quote { font-size: 17px; }
     }
 
+    /* Allow parallax to show through all chapter backgrounds */
+    .chapter {
+      background: rgba(9, 9, 15, 0.35) !important;
+    }
+    .chapter:nth-child(even) {
+      background: rgba(18, 18, 24, 0.55) !important;
+    }
+    .chapter--cta {
+      background: rgba(18, 18, 24, 0.55) !important;
+    }
+
     /* ② Slide-in for blockquotes (left → center) */
     .slide-in {
       opacity: 0;
