@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>データ｜BONLINE PROJECT</title>
+  <meta name="description" content="BONLINEプロジェクトの根拠となる数字・市場データ・奄美大島の現状を公開します。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       ヘッダー
+       ============================================================ -->
+  <header class="site-header scrolled" id="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo">
+        <span class="site-logo__en">BONLINE</span>
+        <span class="site-logo__sub">PROJECT</span>
+      </a>
+      <nav class="site-nav">
+        <a href="index.html#now">現在地</a>
+        <a href="index.html#story">ストーリー</a>
+        <a href="index.html#record">会議録</a>
+        <a href="index.html#numbers">数字</a>
+        <a href="index.html#team">メンバー</a>
+        <a href="index.html#contact" class="nav-cta">応援・参加する</a>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="メニューを開く">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- モバイルナビ -->
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="index.html#now">現在地</a>
+    <a href="index.html#story">ストーリー</a>
+    <a href="index.html#record">会議録</a>
+    <a href="index.html#numbers">数字</a>
+    <a href="index.html#team">メンバー</a>
+    <a href="index.html#contact">応援・参加する</a>
+  </nav>
+
+  <!-- ============================================================
+       ページヒーロー
+       ============================================================ -->
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-label">Data & Numbers</span>
+      <h1 class="page-hero__title">根拠の数字、全部見せます。</h1>
+      <p class="page-hero__sub">
+        なぜ奄美大島なのか。なぜいまなのか。<br>
+        判断の根拠になったデータをすべて公開します。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       市場比較
+       ============================================================ -->
+  <section class="section" id="market">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Market Data</span>
+        <h2 class="section-title">市場の数字</h2>
+        <p class="section-subtitle">宮古島との比較から、奄美大島の「伸びしろ」が見えます。</p>
+      </div>
+
+      <div class="data-compare fade-in">
+        <div class="compare-row compare-row--header">
+          <div class="compare-item compare-item--label"></div>
+          <div class="compare-item compare-item--miyako">宮古島</div>
+          <div class="compare-item compare-item--amami">奄美大島</div>
+        </div>
+
+        <div class="compare-row">
+          <div class="compare-item compare-item--label">プレミアムヴィラ<br>宿泊単価</div>
+          <div class="compare-item compare-item--miyako">
+            <span class="compare-value">62,000<span class="compare-unit">円〜</span></span>
+            <span class="compare-note">確立された水準</span>
+          </div>
+          <div class="compare-item compare-item--amami highlight">
+            <span class="compare-value">24,000<span class="compare-unit">円〜</span></span>
+            <span class="compare-note">繁閑差あり。引き上げる余地がある</span>
+          </div>
+        </div>
+
+        <div class="compare-row">
+          <div class="compare-item compare-item--label">土地取得コスト<br>（目安）</div>
+          <div class="compare-item compare-item--miyako">
+            <span class="compare-value">3<span class="compare-unit">億円〜</span></span>
+            <span class="compare-note">断念した理由</span>
+          </div>
+          <div class="compare-item compare-item--amami highlight">
+            <span class="compare-value">調査中</span>
+            <span class="compare-note">現地視察（4月）で確認予定</span>
+          </div>
+        </div>
+
+        <div class="compare-row">
+          <div class="compare-item compare-item--label">競合ヴィラ数<br>（目安）</div>
+          <div class="compare-item compare-item--miyako">
+            <span class="compare-value">多数</span>
+            <span class="compare-note">すでに競争が激しい</span>
+          </div>
+          <div class="compare-item compare-item--amami highlight">
+            <span class="compare-value">少ない</span>
+            <span class="compare-note">プレミアム帯はほぼ空白</span>
+          </div>
+        </div>
+
+        <div class="compare-row">
+          <div class="compare-item compare-item--label">参考モデル<br>年間利益（3棟）</div>
+          <div class="compare-item compare-item--miyako">
+            <span class="compare-value">約1.1<span class="compare-unit">億円</span></span>
+            <span class="compare-note">実際に繋がりのある社長の実績値</span>
+          </div>
+          <div class="compare-item compare-item--amami highlight">
+            <span class="compare-value">試算中</span>
+            <span class="compare-note">視察・設計後に公開予定</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="data-source fade-in">※ 宮古島データは実際に繋がりのあるヴィラ経営者の実績・情報をもとにしています。</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       奄美大島の現状
+       ============================================================ -->
+  <section class="section section--dark" id="amami">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Amami Now</span>
+        <h2 class="section-title">奄美大島の現状</h2>
+        <p class="section-subtitle">この島が抱えている課題が、私たちが関わる理由でもあります。</p>
+      </div>
+
+      <div class="data-blocks fade-in">
+
+        <!-- 人口 -->
+        <div class="data-block">
+          <h3 class="data-block__title">人口推移</h3>
+          <p class="data-block__desc">日本復帰（1953年）以降、島の人口は一貫して減少し続けています。</p>
+          <div class="bar-list">
+            <div class="bar-item">
+              <span class="bar-label">1955年</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" style="width: 100%"></div>
+              </div>
+              <span class="bar-value">205,000人</span>
+            </div>
+            <div class="bar-item">
+              <span class="bar-label">1990年</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" style="width: 57%"></div>
+              </div>
+              <span class="bar-value">約117,000人</span>
+            </div>
+            <div class="bar-item">
+              <span class="bar-label">2020年</span>
+              <div class="bar-wrap">
+                <div class="bar-fill bar-fill--low" style="width: 29%"></div>
+              </div>
+              <span class="bar-value">58,700人</span>
+            </div>
+            <div class="bar-item">
+              <span class="bar-label">2050年（予測）</span>
+              <div class="bar-wrap">
+                <div class="bar-fill bar-fill--low" style="width: 19%; opacity: 0.5;"></div>
+              </div>
+              <span class="bar-value">約38,000人</span>
+            </div>
+          </div>
+          <p class="data-note">出典：奄美大島人口ビジョン2025（奄美大島総合戦略推進本部）</p>
+        </div>
+
+        <!-- 大島紬 -->
+        <div class="data-block">
+          <h3 class="data-block__title">大島紬の生産量</h3>
+          <p class="data-block__desc">1300年の歴史を持ち「着物の女王」と呼ばれた大島紬。最盛期から99%以上が失われました。</p>
+          <div class="bar-list">
+            <div class="bar-item">
+              <span class="bar-label">1972年（ピーク）</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" style="width: 100%"></div>
+              </div>
+              <span class="bar-value">29.7万反</span>
+            </div>
+            <div class="bar-item">
+              <span class="bar-label">生産額（ピーク時）</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" style="width: 100%"></div>
+              </div>
+              <span class="bar-value">約300億円</span>
+            </div>
+            <div class="bar-item">
+              <span class="bar-label">2019年</span>
+              <div class="bar-wrap">
+                <div class="bar-fill bar-fill--low" style="width: 1.2%"></div>
+              </div>
+              <span class="bar-value">3,600反</span>
+            </div>
+            <div class="bar-item">
+              <span class="bar-label">生産額（現在）</span>
+              <div class="bar-wrap">
+                <div class="bar-fill bar-fill--low" style="width: 8.7%"></div>
+              </div>
+              <span class="bar-value">約26億円</span>
+            </div>
+          </div>
+          <p class="data-note">出典：松下政経塾・各種調査資料</p>
+        </div>
+
+        <!-- 観光・社会データ -->
+        <div class="data-block data-block--wide">
+          <h3 class="data-block__title">その他のデータ</h3>
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <span class="mini-stat__value">35.0<span class="mini-stat__unit">%</span></span>
+              <span class="mini-stat__label">高齢化率（2020年）</span>
+              <span class="mini-stat__note">全国平均を大きく上回る</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat__value">89<span class="mini-stat__unit">万人</span></span>
+              <span class="mini-stat__label">年間観光客数（2019年）</span>
+              <span class="mini-stat__note">島の人口の約9倍</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat__value">1.8<span class="mini-stat__unit">%</span></span>
+              <span class="mini-stat__label">宿泊者中の外国人比率</span>
+              <span class="mini-stat__note">屋久島など県内比較で最低水準</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-stat__value">65.1<span class="mini-stat__unit">%</span></span>
+              <span class="mini-stat__label">「情報発信が不足」と感じる島民</span>
+              <span class="mini-stat__note">島民アンケートより（奄美市）</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       BONLINEの目標数字
+       ============================================================ -->
+  <section class="section" id="goals">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Our Goals</span>
+        <h2 class="section-title">私たちの目標数字</h2>
+        <p class="section-subtitle">現地視察・設計が進むにつれて、順次更新していきます。</p>
+      </div>
+
+      <div class="numbers-grid fade-in">
+        <div class="num-card num-card--highlight">
+          <span class="num-card__label">目標 宿泊単価</span>
+          <div class="num-card__value">調査中<span class="num-unit"></span></div>
+          <p class="num-card__note">一休の審査クリアを最低ライン。宮古島水準（62,000円〜）を目指す</p>
+        </div>
+        <div class="num-card">
+          <span class="num-card__label">初期投資額（想定）</span>
+          <div class="num-card__value">調査中<span class="num-unit"></span></div>
+          <p class="num-card__note">土地・建設・家具・設備。現地視察後に公開予定</p>
+        </div>
+        <div class="num-card">
+          <span class="num-card__label">想定 年間稼働率</span>
+          <div class="num-card__value">調査中<span class="num-unit"></span></div>
+          <p class="num-card__note">繁閑差のある奄美でどこまで稼働できるか。設計段階で試算</p>
+        </div>
+        <div class="num-card">
+          <span class="num-card__label">開業目標</span>
+          <div class="num-card__value">未定<span class="num-unit"></span></div>
+          <p class="num-card__note">土地取得・設計・建設のスケジュールが確定次第更新</p>
+        </div>
+        <div class="num-card">
+          <span class="num-card__label">収支回収期間（想定）</span>
+          <div class="num-card__value">調査中<span class="num-unit"></span></div>
+          <p class="num-card__note">初期投資の回収シミュレーション。視察後に公開</p>
+        </div>
+        <div class="num-card">
+          <span class="num-card__label">目標 棟数</span>
+          <div class="num-card__value">1<span class="num-unit">棟〜</span></div>
+          <p class="num-card__note">まず1棟で実証。収益が出れば拡大する方針</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       今後追加予定
+       ============================================================ -->
+  <section class="section section--dark" id="coming">
+    <div class="container">
+      <div class="section-header fade-in">
+        <span class="section-label">Coming Soon</span>
+        <h2 class="section-title">順次、追加していきます。</h2>
+        <p class="section-subtitle">現地視察・事業計画が進むにつれ、このページに積み上げていきます。</p>
+      </div>
+
+      <div class="coming-grid fade-in">
+        <div class="coming-card">
+          <span class="coming-card__icon">01</span>
+          <h3 class="coming-card__title">収支シミュレーション詳細</h3>
+          <p class="coming-card__text">初期投資・年間売上・経費・利益の試算。現地視察（4月）後に公開予定。</p>
+          <span class="coming-card__badge">4月下旬〜</span>
+        </div>
+        <div class="coming-card">
+          <span class="coming-card__icon">02</span>
+          <h3 class="coming-card__title">土地・物件情報</h3>
+          <p class="coming-card__text">候補地の面積・価格・条件など。交渉が進んだ段階で公開します。</p>
+          <span class="coming-card__badge">交渉進捗次第</span>
+        </div>
+        <div class="coming-card">
+          <span class="coming-card__icon">03</span>
+          <h3 class="coming-card__title">建設コスト概算</h3>
+          <p class="coming-card__text">設計士との打ち合わせが始まり次第、概算費用を掲載します。</p>
+          <span class="coming-card__badge">2026年下半期〜</span>
+        </div>
+        <div class="coming-card">
+          <span class="coming-card__icon">04</span>
+          <h3 class="coming-card__title">奄美の宿泊市場調査</h3>
+          <p class="coming-card__text">現地での調査結果。稼働率・単価・繁閑の実態を数字で。</p>
+          <span class="coming-card__badge">4月下旬〜</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       戻るリンク
+       ============================================================ -->
+  <section class="section back-section">
+    <div class="container" style="text-align: center;">
+      <a href="index.html" class="btn btn--ghost">← プロジェクトトップに戻る</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       フッター
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="footer-logo__en">BONLINE</span>
+        <span class="footer-logo__sub">PROJECT</span>
+      </div>
+      <p class="footer-tagline">Building Bonds, One Line at a Time.</p>
+      <p class="footer-copy">&copy; 2026 BONLINE PROJECT. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
