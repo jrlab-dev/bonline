@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ヴィラ投資シミュレーター</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f5f3ee; color: #2c2c2c; font-size: 14px; }
+
+.header { background: #1a1a2e; color: #fff; padding: 36px 40px; }
+.header h1 { font-size: 1.8rem; letter-spacing: 0.08em; margin-bottom: 6px; }
+.header p { color: #aaa; font-size: 0.85rem; margin-bottom: 4px; }
+.header .badge { display: inline-block; background: #e8a020; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-top: 8px; }
+
+.container { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
+
+.hint-box {
+  background: #fff8ed;
+  border-left: 5px solid #e8a020;
+  padding: 14px 20px;
+  margin-bottom: 28px;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.7;
+}
+.hint-box strong { color: #c07800; }
+
+/* セクション */
+.section { margin-bottom: 28px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+.section-header {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.section-header.purple { background: #3d1060; }
+.section-header.gold   { background: #7a4800; }
+.section-header.season { padding: 8px 20px; font-size: 0.82rem; font-weight: 600; }
+.section-header.peak   { background: #c05000; }
+.section-header.normal { background: #2a6a3a; }
+.section-header.off    { background: #3a3a8a; }
+
+/* 行 */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 130px 90px 130px;
+  border-bottom: 1px solid #f0ede7;
+  align-items: center;
+  min-height: 40px;
+}
+.row:last-child { border-bottom: none; }
+.row.result { background: #fff8ed; }
+.row.result-main { background: #e8a020; }
+.row.header-row {
+  background: #2c3e50;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  min-height: 32px;
+}
+
+.cell { padding: 8px 14px; }
+.cell-label { padding: 8px 14px; font-size: 0.85rem; color: #333; }
+.cell-label.result { font-weight: 700; color: #111; }
+.cell-label.result-main { font-weight: 700; color: #fff; font-size: 0.95rem; }
+.cell-unit { padding: 8px 8px; font-size: 0.78rem; color: #999; text-align: center; }
+.cell-unit.result-main { color: #ffe; }
+.cell-calc { padding: 8px 14px; font-size: 0.88rem; font-weight: 600; color: #222; text-align: right; }
+.cell-calc.result-main { color: #fff; font-size: 1rem; }
+.cell-calc.negative { color: #c03030; }
+.cell-calc.positive { color: #1a7a2a; }
+
+/* 入力フィールド */
+.cell-input { padding: 4px 14px; text-align: right; }
+input[type="number"] {
+  width: 100%;
+  border: 1.5px solid #b8c8e8;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 0.88rem;
+  color: #0000cc;
+  font-family: inherit;
+  font-weight: 600;
+  text-align: right;
+  background: #f0f4ff;
+  transition: border-color 0.2s, background 0.2s;
+}
+input[type="number"]:focus {
+  outline: none;
+  border-color: #4a90d9;
+  background: #e8f0ff;
+}
+input[type="number"].auto {
+  background: #f5f5f5;
+  color: #555;
+  border-color: #ddd;
+}
+
+/* サマリーカード */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 28px;
+}
+.summary-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border-top: 4px solid #4a90d9;
+}
+.summary-card.three { border-top-color: #e8a020; background: #1a1a2e; color: #fff; }
+.summary-card .label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: #999; margin-bottom: 4px; }
+.summary-card.three .label { color: #aaa; }
+.summary-card h2 { font-size: 1.5rem; margin-bottom: 12px; color: #4a90d9; }
+.summary-card.three h2 { color: #e8a020; }
+.big-num { font-size: 2.4rem; font-weight: 700; line-height: 1.1; margin-bottom: 4px; color: #1a1a2e; }
+.summary-card.three .big-num { color: #e8a020; }
+.big-num.negative { color: #c03030 !important; }
+.big-sub { font-size: 0.75rem; color: #888; margin-bottom: 16px; }
+.summary-card.three .big-sub { color: #bbb; }
+.mini-stats { display: flex; flex-direction: column; gap: 8px; }
+.mini-stat { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid #f0ede7; }
+.summary-card.three .mini-stat { border-bottom-color: #2a2a4e; }
+.mini-stat .k { color: #888; }
+.summary-card.three .mini-stat .k { color: #aaa; }
+.mini-stat .v { font-weight: 700; color: #2255aa; }
+.summary-card.three .mini-stat .v { color: #e8a020; }
+.mini-stat .v.negative { color: #c03030; }
+.mini-stat .v.positive { color: #1a7a2a; }
+
+.recovery-bar-wrap { margin-top: 16px; }
+.recovery-bar-label { font-size: 0.75rem; color: #888; margin-bottom: 4px; }
+.summary-card.three .recovery-bar-label { color: #aaa; }
+.recovery-bar { height: 8px; background: #e8e4dc; border-radius: 4px; overflow: hidden; }
+.summary-card.three .recovery-bar { background: #2a2a4e; }
+.recovery-fill { height: 100%; background: #4a90d9; border-radius: 4px; transition: width 0.4s; }
+.summary-card.three .recovery-fill { background: #e8a020; }
+
+.note { font-size: 0.75rem; color: #888; margin-top: 20px; line-height: 1.7; }
+
+/* 凡例 */
+.legend {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  font-size: 0.78rem; color: #666;
+  padding: 14px 20px; background: #f5f5f0; border-radius: 8px; margin-bottom: 24px;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 12px; height: 12px; border-radius: 2px; }
+
+@media (max-width: 640px) {
+  .header { padding: 24px 20px; }
+  .header h1 { font-size: 1.3rem; }
+  .row { grid-template-columns: 1fr 100px 72px 100px; }
+  .summary-grid { grid-template-columns: 1fr; }
+  .cell-label, .cell-calc, .cell-input, .cell-unit { padding: 6px 10px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html" style="display:inline-block;color:#e8a020;font-size:0.8rem;text-decoration:none;margin-bottom:12px;letter-spacing:0.05em;">← BONLINE PROJECT トップへ戻る</a>
+  <h1>ヴィラ投資シミュレーター</h1>
+  <p>奄美大島ヴィラ事業</p>
+  <span class="badge">青字の数字を変更すると自動計算されます</span>
+</div>
+
+<div class="container">
+
+  <div class="hint-box">
+    <strong>使い方：</strong>青字の入力欄を変えると、すべての計算が自動で更新されます。<br>
+    初期値は計画モデルに基づく標準値です。実際の条件に合わせて調整してください。
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#4a90d9;"></div>青字 = 入力値（変更可）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#888;"></div>黒字 = 自動計算（変更不要）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e8a020;"></div>▶印 = 集計結果</div>
+  </div>
+
+  <!-- 基本条件 -->
+  <div class="section">
+    <div class="section-header">■ 基本条件</div>
+    <div class="row header-row">
+      <div class="cell">項目</div><div class="cell" style="text-align:right">入力値</div><div class="cell" style="text-align:center">単位</div><div class="cell" style="text-align:right">計算値</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">棟数（計画）</div>
+      <div class="cell-input"><input type="number" id="b5" value="3" min="1" max="10" oninput="calc()"></div>
+      <div class="cell-unit">棟</div>
+      <div class="cell-calc" id="d5">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">建物面積（1棟）</div>
+      <div class="cell-input"><input type="number" id="b6" value="130" min="30" oninput="calc()"></div>
+      <div class="cell-unit">㎡</div>
+      <div class="cell-calc" id="d6">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">建築費単価</div>
+      <div class="cell-input"><input type="number" id="b7" value="90" min="50" oninput="calc()"></div>
+      <div class="cell-unit">万円/坪</div>
+      <div class="cell-calc">標準80〜100万</div>
+    </div>
+  </div>
+
+  <!-- 建設費用 -->
+  <div class="section">
+    <div class="section-header">■ 建設費用（1棟あたり）</div>
+    <div class="row header-row">
+      <div class="cell">項目</div><div class="cell" style="text-align:right">入力値</div><div class="cell" style="text-align:center">単位</div><div class="cell" style="text-align:right">計算値</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">建築費（本体工事）</div>
+      <div class="cell-input"><input type="number" id="b9" class="auto" readonly></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d9">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">外構・造成・植栽</div>
+      <div class="cell-input"><input type="number" id="b10" value="500" oninput="calc()"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc">目安：400〜800万</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">家具・家電・備品（FF&amp;E）</div>
+      <div class="cell-input"><input type="number" id="b11" value="400" oninput="calc()"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc">目安：300〜600万</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">システム・設備</div>
+      <div class="cell-input"><input type="number" id="b12" value="150" oninput="calc()"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc">目安：100〜200万</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">諸経費（設計・申請等）</div>
+      <div class="cell-input"><input type="number" id="b13" value="350" oninput="calc()"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc">目安：250〜450万</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 建物総額（1棟）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d14">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">土地代（1棟分）</div>
+      <div class="cell-input"><input type="number" id="b15" value="1000" oninput="calc()"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc">目安：500〜2,000万</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 総投資額（1棟）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d16">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 総投資額（全棟合計）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d17">—</div>
+    </div>
+  </div>
+
+  <!-- 収益モデル -->
+  <div class="section">
+    <div class="section-header">■ 収益モデル（1棟あたり・年間）</div>
+    <div class="row header-row">
+      <div class="cell">時期・区分</div><div class="cell" style="text-align:right">日数 or 単価 or 稼働率</div><div class="cell" style="text-align:center">単位</div><div class="cell" style="text-align:right">売上小計（万円）</div>
+    </div>
+
+    <!-- 繁忙期 -->
+    <div class="section-header season peak">〔繁忙期〕7〜9月・GW・お盆　計100日</div>
+    <div class="row" style="background:#fff8f4">
+      <div class="cell-label">繁忙期【平日】日数</div>
+      <div class="cell-input"><input type="number" id="b21" value="65" min="0" oninput="calc()"></div>
+      <div class="cell-unit">日</div>
+      <div class="cell-calc" id="d21">—</div>
+    </div>
+    <div class="row" style="background:#fff8f4">
+      <div class="cell-label">繁忙期【平日】単価</div>
+      <div class="cell-input"><input type="number" id="b22" value="5.0" step="0.5" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/泊</div>
+      <div class="cell-calc">目安：4.5〜6万</div>
+    </div>
+    <div class="row" style="background:#fff8f4">
+      <div class="cell-label">繁忙期【平日】稼働率</div>
+      <div class="cell-input"><input type="number" id="b23" value="0.7" step="0.05" min="0" max="1" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc">目安：0.65〜0.75</div>
+    </div>
+    <div class="row" style="background:#fff8f4">
+      <div class="cell-label">繁忙期【休日】日数</div>
+      <div class="cell-input"><input type="number" id="b24" value="35" min="0" oninput="calc()"></div>
+      <div class="cell-unit">日</div>
+      <div class="cell-calc" id="d24">—</div>
+    </div>
+    <div class="row" style="background:#fff8f4">
+      <div class="cell-label">繁忙期【休日】単価</div>
+      <div class="cell-input"><input type="number" id="b25" value="9.0" step="0.5" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/泊</div>
+      <div class="cell-calc">目安：8〜12万</div>
+    </div>
+    <div class="row" style="background:#fff8f4">
+      <div class="cell-label">繁忙期【休日】稼働率</div>
+      <div class="cell-input"><input type="number" id="b26" value="0.9" step="0.05" min="0" max="1" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc">目安：0.85〜0.95</div>
+    </div>
+
+    <!-- 通常期 -->
+    <div class="section-header season normal">〔通常期〕3〜6月・10〜11月　計130日</div>
+    <div class="row" style="background:#f4fff6">
+      <div class="cell-label">通常期【平日】日数</div>
+      <div class="cell-input"><input type="number" id="b28" value="90" min="0" oninput="calc()"></div>
+      <div class="cell-unit">日</div>
+      <div class="cell-calc" id="d28">—</div>
+    </div>
+    <div class="row" style="background:#f4fff6">
+      <div class="cell-label">通常期【平日】単価</div>
+      <div class="cell-input"><input type="number" id="b29" value="3.5" step="0.5" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/泊</div>
+      <div class="cell-calc">目安：3〜4万</div>
+    </div>
+    <div class="row" style="background:#f4fff6">
+      <div class="cell-label">通常期【平日】稼働率</div>
+      <div class="cell-input"><input type="number" id="b30" value="0.4" step="0.05" min="0" max="1" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc">目安：0.35〜0.45</div>
+    </div>
+    <div class="row" style="background:#f4fff6">
+      <div class="cell-label">通常期【休日】日数</div>
+      <div class="cell-input"><input type="number" id="b31" value="40" min="0" oninput="calc()"></div>
+      <div class="cell-unit">日</div>
+      <div class="cell-calc" id="d31">—</div>
+    </div>
+    <div class="row" style="background:#f4fff6">
+      <div class="cell-label">通常期【休日】単価</div>
+      <div class="cell-input"><input type="number" id="b32" value="6.5" step="0.5" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/泊</div>
+      <div class="cell-calc">目安：5.5〜7万</div>
+    </div>
+    <div class="row" style="background:#f4fff6">
+      <div class="cell-label">通常期【休日】稼働率</div>
+      <div class="cell-input"><input type="number" id="b33" value="0.65" step="0.05" min="0" max="1" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc">目安：0.60〜0.70</div>
+    </div>
+
+    <!-- 閑散期 -->
+    <div class="section-header season off">〔閑散期〕1〜2月・12月　計135日</div>
+    <div class="row" style="background:#f4f4ff">
+      <div class="cell-label">閑散期【平日】日数</div>
+      <div class="cell-input"><input type="number" id="b35" value="100" min="0" oninput="calc()"></div>
+      <div class="cell-unit">日</div>
+      <div class="cell-calc" id="d35">—</div>
+    </div>
+    <div class="row" style="background:#f4f4ff">
+      <div class="cell-label">閑散期【平日】単価</div>
+      <div class="cell-input"><input type="number" id="b36" value="2.2" step="0.1" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/泊</div>
+      <div class="cell-calc">目安：2〜2.5万</div>
+    </div>
+    <div class="row" style="background:#f4f4ff">
+      <div class="cell-label">閑散期【平日】稼働率</div>
+      <div class="cell-input"><input type="number" id="b37" value="0.2" step="0.05" min="0" max="1" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc">目安：0.15〜0.25</div>
+    </div>
+    <div class="row" style="background:#f4f4ff">
+      <div class="cell-label">閑散期【休日】日数</div>
+      <div class="cell-input"><input type="number" id="b38" value="35" min="0" oninput="calc()"></div>
+      <div class="cell-unit">日</div>
+      <div class="cell-calc" id="d38">—</div>
+    </div>
+    <div class="row" style="background:#f4f4ff">
+      <div class="cell-label">閑散期【休日】単価</div>
+      <div class="cell-input"><input type="number" id="b39" value="3.8" step="0.1" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/泊</div>
+      <div class="cell-calc">目安：3〜4万</div>
+    </div>
+    <div class="row" style="background:#f4f4ff">
+      <div class="cell-label">閑散期【休日】稼働率</div>
+      <div class="cell-input"><input type="number" id="b40" value="0.4" step="0.05" min="0" max="1" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc">目安：0.35〜0.45</div>
+    </div>
+
+    <div class="row result">
+      <div class="cell-label result">▶ 年間売上（1棟）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d41">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 年間売上（全棟合計）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d42">—</div>
+    </div>
+  </div>
+
+  <!-- 運営コスト -->
+  <div class="section">
+    <div class="section-header">■ 運営コスト（1棟あたり・年間）</div>
+    <div class="row header-row">
+      <div class="cell">項目</div><div class="cell" style="text-align:right">入力値</div><div class="cell" style="text-align:center">単位</div><div class="cell" style="text-align:right">年間合計（万円）</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">清掃費（1回あたり）</div>
+      <div class="cell-input"><input type="number" id="b44" value="1.5" step="0.1" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/回</div>
+      <div class="cell-calc" id="d44">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">リネン費</div>
+      <div class="cell-input"><input type="number" id="b45" value="5" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/月</div>
+      <div class="cell-calc" id="d45">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">光熱費</div>
+      <div class="cell-input"><input type="number" id="b46" value="8" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/月</div>
+      <div class="cell-calc" id="d46">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">消耗品・アメニティ</div>
+      <div class="cell-input"><input type="number" id="b47" value="3" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/月</div>
+      <div class="cell-calc" id="d47">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">OTA依存率</div>
+      <div class="cell-input"><input type="number" id="b48" value="0.6" step="0.05" min="0" max="1" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc">一休.com等</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">OTA手数料率</div>
+      <div class="cell-input"><input type="number" id="b49" value="0.15" step="0.01" min="0" max="0.5" oninput="calc()"></div>
+      <div class="cell-unit">（0〜1）</div>
+      <div class="cell-calc" id="d49">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">保険・点検・雑費</div>
+      <div class="cell-input"><input type="number" id="b50" value="30" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/年</div>
+      <div class="cell-calc">目安：20〜40万</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">管理委託費（外部委託）</div>
+      <div class="cell-input"><input type="number" id="b51" value="0" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/月</div>
+      <div class="cell-calc" id="d51">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">固定資産税</div>
+      <div class="cell-input"><input type="number" id="b52" value="50" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/年</div>
+      <div class="cell-calc">目安：40〜70万</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">修繕積立</div>
+      <div class="cell-input"><input type="number" id="b53" value="40" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/年</div>
+      <div class="cell-calc">毎年積み立て推奨</div>
+    </div>
+    <div class="row">
+      <div class="cell-label">税理士・会計費用（按分）</div>
+      <div class="cell-input"><input type="number" id="b54" value="10" min="0" oninput="calc()"></div>
+      <div class="cell-unit">万円/年</div>
+      <div class="cell-calc">法人費用÷棟数</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 年間コスト合計（1棟）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d55">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label" style="color:#555;font-size:0.82rem">多棟効率化係数（同一敷地・共同調達）</div>
+      <div class="cell-input"><input type="number" id="b56" value="0.85" step="0.01" min="0.5" max="1" oninput="calc()"></div>
+      <div class="cell-unit">係数</div>
+      <div class="cell-calc" style="font-size:0.78rem;color:#888">3棟目安：0.80〜0.90</div>
+    </div>
+  </div>
+
+  <!-- 借入・返済 -->
+  <div class="section">
+    <div class="section-header purple">■ 借入・返済（1棟あたり）</div>
+    <div class="row header-row">
+      <div class="cell">項目</div><div class="cell" style="text-align:right">入力値</div><div class="cell" style="text-align:center">単位</div><div class="cell" style="text-align:right">計算値</div>
+    </div>
+    <div class="row" style="background:#faf0ff">
+      <div class="cell-label">借入額（1棟）</div>
+      <div class="cell-input"><input type="number" id="b58" class="auto" readonly></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" style="font-size:0.78rem;color:#888">総投資額の70%（自動）</div>
+    </div>
+    <div class="row" style="background:#faf0ff">
+      <div class="cell-label">借入金利（年）</div>
+      <div class="cell-input"><input type="number" id="b59" value="2.0" step="0.1" min="0" oninput="calc()"></div>
+      <div class="cell-unit">%</div>
+      <div class="cell-calc">目安：1.5〜3.0%</div>
+    </div>
+    <div class="row" style="background:#faf0ff">
+      <div class="cell-label">借入期間</div>
+      <div class="cell-input"><input type="number" id="b60" value="20" min="5" max="35" oninput="calc()"></div>
+      <div class="cell-unit">年</div>
+      <div class="cell-calc">15〜25年が一般的</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 年間返済額（元利均等）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d61">—</div>
+    </div>
+    <div class="row" style="background:#faf0ff">
+      <div class="cell-label" style="font-size:0.82rem;color:#666">うち利息分（初年度概算）</div>
+      <div class="cell-input"></div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="d62" style="font-size:0.82rem;color:#888">—</div>
+    </div>
+  </div>
+
+  <!-- 収支サマリーテーブル -->
+  <div class="section">
+    <div class="section-header gold">■ 収支サマリー</div>
+    <div class="row header-row">
+      <div class="cell">指標</div><div class="cell" style="text-align:right">1棟あたり</div><div class="cell" style="text-align:center">単位</div><div class="cell" style="text-align:right">全棟合計</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">総投資額</div>
+      <div class="cell-calc" id="s_inv1">—</div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="s_invN">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">年間売上</div>
+      <div class="cell-calc" id="s_rev1">—</div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="s_revN">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">年間運営コスト</div>
+      <div class="cell-calc" id="s_cost1">—</div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="s_costN">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">年間借入返済</div>
+      <div class="cell-calc" id="s_loan1">—</div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="s_loanN">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 税引前純利益</div>
+      <div class="cell-calc" id="s_pre1">—</div>
+      <div class="cell-unit">万円</div>
+      <div class="cell-calc" id="s_preN">—</div>
+    </div>
+    <div class="row">
+      <div class="cell-label" style="font-size:0.82rem;color:#555">法人税等（実効税率）</div>
+      <div class="cell-input"><input type="number" id="b70" value="33" step="1" min="0" max="50" oninput="calc()"></div>
+      <div class="cell-unit">%</div>
+      <div class="cell-calc" id="d70">—</div>
+    </div>
+    <div class="row result-main">
+      <div class="cell-label result-main">▶ 税引後純利益（1棟）</div>
+      <div class="cell-calc result-main" id="s_net1">—</div>
+      <div class="cell-unit result-main">万円</div>
+      <div class="cell-calc result-main" id="s_netN">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">営業利益率（運営ベース）</div>
+      <div class="cell-calc" id="s_margin">—</div>
+      <div class="cell-unit">%</div>
+      <div class="cell-calc">—</div>
+    </div>
+    <div class="row result">
+      <div class="cell-label result">▶ 投資回収期間（税引前）</div>
+      <div class="cell-calc" id="s_rec1">—</div>
+      <div class="cell-unit">年</div>
+      <div class="cell-calc" id="s_recN">—</div>
+    </div>
+  </div>
+
+  <!-- サマリーカード -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="label">1棟計画</div>
+      <h2>1棟あたり</h2>
+      <div class="big-num" id="card1_net">—</div>
+      <div class="big-sub">税引後純利益（万円/年）</div>
+      <div class="mini-stats">
+        <div class="mini-stat"><span class="k">総投資額</span><span class="v" id="card1_inv">—</span></div>
+        <div class="mini-stat"><span class="k">年間売上</span><span class="v" id="card1_rev">—</span></div>
+        <div class="mini-stat"><span class="k">年間コスト</span><span class="v" id="card1_cost">—</span></div>
+        <div class="mini-stat"><span class="k">年間返済</span><span class="v" id="card1_loan">—</span></div>
+        <div class="mini-stat"><span class="k">投資回収期間</span><span class="v" id="card1_rec">—</span></div>
+      </div>
+      <div class="recovery-bar-wrap">
+        <div class="recovery-bar-label">投資回収進捗イメージ（25年基準）</div>
+        <div class="recovery-bar"><div class="recovery-fill" id="bar1" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="summary-card three">
+      <div class="label">全棟計画</div>
+      <h2 id="cardN_title">全棟合計</h2>
+      <div class="big-num" id="cardN_net">—</div>
+      <div class="big-sub">税引後純利益（万円/年）</div>
+      <div class="mini-stats">
+        <div class="mini-stat"><span class="k">総投資額</span><span class="v" id="cardN_inv">—</span></div>
+        <div class="mini-stat"><span class="k">年間売上</span><span class="v" id="cardN_rev">—</span></div>
+        <div class="mini-stat"><span class="k">年間コスト（効率化後）</span><span class="v" id="cardN_cost">—</span></div>
+        <div class="mini-stat"><span class="k">年間返済</span><span class="v" id="cardN_loan">—</span></div>
+        <div class="mini-stat"><span class="k">投資回収期間</span><span class="v" id="cardN_rec">—</span></div>
+      </div>
+      <div class="recovery-bar-wrap">
+        <div class="recovery-bar-label">投資回収進捗イメージ（25年基準）</div>
+        <div class="recovery-bar"><div class="recovery-fill" id="barN" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    ※ 本シミュレーターは計画段階の試算ツールです。実際の収益・コストは立地・運営状況により異なります。<br>
+    ※ 借入返済は元利均等方式（PMT計算）。借入額は総投資額の70%を自動適用。<br>
+    ※ 多棟効率化係数は同一敷地での複数棟管理による運営コスト削減率です（3棟目安：0.80〜0.90）。
+  </p>
+
+</div>
+
+<script>
+function v(id) {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  return parseFloat(el.value) || 0;
+}
+
+function fmt(n, dec=1) {
+  if (!isFinite(n)) return '計算不可';
+  return n.toLocaleString('ja-JP', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+}
+
+function setEl(id, val, cls) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  if (cls) {
+    el.classList.remove('negative','positive');
+    el.classList.add(cls);
+  }
+}
+
+function colorCls(n) {
+  if (n < 0) return 'negative';
+  if (n > 0) return 'positive';
+  return '';
+}
+
+function calc() {
+  // 基本
+  const b5  = v('b5');
+  const b6  = v('b6');
+  const b7  = v('b7');
+  const d6  = Math.round(b6 / 3.3058 * 10) / 10;
+  const d9  = Math.round(d6 * b7);
+  document.getElementById('b9').value = d9;
+  setEl('d6', d6 + ' 坪');
+  setEl('d9', fmt(d9, 0) + ' 万');
+
+  // 建設費
+  const b10 = v('b10'), b11 = v('b11'), b12 = v('b12'), b13 = v('b13'), b15 = v('b15');
+  const d14 = d9 + b10 + b11 + b12 + b13;
+  const d16 = d14 + b15;
+  const d17 = d16 * b5;
+  setEl('d14', fmt(d14, 0));
+  setEl('d16', fmt(d16, 0));
+  setEl('d17', fmt(d17, 0));
+
+  // 借入額（自動）
+  const b58auto = Math.round(d16 * 0.7);
+  document.getElementById('b58').value = b58auto;
+
+  // 収益
+  const b21=v('b21'),b22=v('b22'),b23=v('b23');
+  const b24=v('b24'),b25=v('b25'),b26=v('b26');
+  const b28=v('b28'),b29=v('b29'),b30=v('b30');
+  const b31=v('b31'),b32=v('b32'),b33=v('b33');
+  const b35=v('b35'),b36=v('b36'),b37=v('b37');
+  const b38=v('b38'),b39=v('b39'),b40=v('b40');
+
+  const d21 = b21*b22*b23;
+  const d24 = b24*b25*b26;
+  const d28 = b28*b29*b30;
+  const d31 = b31*b32*b33;
+  const d35 = b35*b36*b37;
+  const d38 = b38*b39*b40;
+  const d41 = d21+d24+d28+d31+d35+d38;
+  const d42 = d41*b5;
+
+  setEl('d21', fmt(d21));
+  setEl('d24', fmt(d24));
+  setEl('d28', fmt(d28));
+  setEl('d31', fmt(d31));
+  setEl('d35', fmt(d35));
+  setEl('d38', fmt(d38));
+  setEl('d41', fmt(d41));
+  setEl('d42', fmt(d42));
+
+  // コスト
+  const b44=v('b44'),b45=v('b45'),b46=v('b46'),b47=v('b47');
+  const b48=v('b48'),b49=v('b49'),b50=v('b50'),b51=v('b51');
+  const b52=v('b52'),b53=v('b53'),b54=v('b54');
+  const b56=v('b56');
+
+  const occ = b21*b23 + b24*b26 + b28*b30 + b31*b33 + b35*b37 + b38*b40;
+  const d44 = occ * b44;
+  const d45 = b45*12;
+  const d46 = b46*12;
+  const d47 = b47*12;
+  const d49 = d41*b48*b49;
+  const d51 = b51*12;
+  const d55 = d44+d45+d46+d47+d49+b50+d51+b52+b53+b54;
+
+  setEl('d44', fmt(d44));
+  setEl('d45', fmt(d45, 0));
+  setEl('d46', fmt(d46, 0));
+  setEl('d47', fmt(d47, 0));
+  setEl('d49', fmt(d49));
+  setEl('d51', fmt(d51, 0));
+  setEl('d55', fmt(d55));
+
+  // 返済
+  const b59=v('b59'), b60=v('b60');
+  let d61 = 0;
+  if (b58auto > 0 && b59 > 0 && b60 > 0) {
+    const r = b59/100/12;
+    const n = b60*12;
+    const pmt = b58auto*10000 * r / (1 - Math.pow(1+r, -n));
+    d61 = Math.round(pmt / 10000 * 12 * 10) / 10;
+  } else if (b58auto > 0 && b59 === 0 && b60 > 0) {
+    d61 = Math.round(b58auto / b60 * 10) / 10;
+  }
+  const d62 = Math.round(b58auto * b59/100 * 10) / 10;
+  setEl('d61', fmt(d61));
+  setEl('d62', fmt(d62) + ' 万（参考）');
+
+  // サマリー
+  const costN = d55 * b5 * b56;
+  const pre1  = d41 - d55 - d61;
+  const preN  = d41*b5 - costN - d61*b5;
+
+  const b70 = v('b70');
+  const tax1 = pre1 > 0 ? Math.round(pre1 * b70/100 * 10)/10 : 0;
+  const taxN = preN > 0 ? Math.round(preN * b70/100 * 10)/10 : 0;
+  setEl('d70', tax1 > 0 ? fmt(tax1) + ' 万' : '—');
+
+  const net1 = Math.round((pre1 - tax1)*10)/10;
+  const netN = Math.round((preN - taxN)*10)/10;
+
+  const margin = d41 > 0 ? Math.round((d41-d55)/d41*1000)/10 : 0;
+
+  const rec1 = (d41-d55) > 0 ? Math.round(d16/(d41-d55)*10)/10 : null;
+  const recN = (d41-d55)*b5 > 0 ? Math.round(d17/((d41-d55)*b5)*10)/10 : null;
+
+  // テーブル
+  setEl('s_inv1',  fmt(d16, 0) + ' 万');
+  setEl('s_invN',  fmt(d17, 0) + ' 万');
+  setEl('s_rev1',  fmt(d41) + ' 万');
+  setEl('s_revN',  fmt(d42) + ' 万');
+  setEl('s_cost1', fmt(d55) + ' 万');
+  setEl('s_costN', fmt(costN) + ' 万');
+  setEl('s_loan1', fmt(d61) + ' 万');
+  setEl('s_loanN', fmt(d61*b5) + ' 万');
+
+  const pre1El = document.getElementById('s_pre1');
+  const preNEl = document.getElementById('s_preN');
+  pre1El.textContent = fmt(pre1) + ' 万';
+  pre1El.className = 'cell-calc ' + colorCls(pre1);
+  preNEl.textContent = fmt(preN) + ' 万';
+  preNEl.className = 'cell-calc ' + colorCls(preN);
+
+  const net1El = document.getElementById('s_net1');
+  const netNEl = document.getElementById('s_netN');
+  net1El.textContent = fmt(net1) + ' 万';
+  net1El.className = 'cell-calc result-main ' + colorCls(net1);
+  netNEl.textContent = fmt(netN) + ' 万';
+  netNEl.className = 'cell-calc result-main ' + colorCls(netN);
+
+  setEl('s_margin', margin.toFixed(1) + ' %');
+  setEl('s_rec1',   rec1 !== null ? rec1 + ' 年' : '計算不可');
+  setEl('s_recN',   recN !== null ? recN + ' 年' : '計算不可');
+
+  // カード
+  document.getElementById('cardN_title').textContent = b5 + '棟合計';
+
+  const card1_net = document.getElementById('card1_net');
+  card1_net.textContent = fmt(net1) + ' 万円';
+  card1_net.className = 'big-num' + (net1 < 0 ? ' negative' : '');
+
+  const cardN_net = document.getElementById('cardN_net');
+  cardN_net.textContent = fmt(netN) + ' 万円';
+  cardN_net.className = 'big-num' + (netN < 0 ? ' negative' : '');
+
+  setEl('card1_inv',  fmt(d16, 0) + ' 万円');
+  setEl('card1_rev',  fmt(d41) + ' 万円');
+  setEl('card1_cost', fmt(d55) + ' 万円');
+  setEl('card1_loan', fmt(d61) + ' 万円');
+  setEl('card1_rec',  rec1 !== null ? rec1 + ' 年' : '計算不可');
+
+  setEl('cardN_inv',  fmt(d17, 0) + ' 万円');
+  setEl('cardN_rev',  fmt(d42) + ' 万円');
+  setEl('cardN_cost', fmt(costN) + ' 万円');
+  setEl('cardN_loan', fmt(d61*b5) + ' 万円');
+  setEl('cardN_rec',  recN !== null ? recN + ' 年' : '計算不可');
+
+  // 回収バー
+  const bar1pct  = rec1 !== null ? Math.min(100, Math.round(100/rec1*4)) : 0;
+  const barNpct  = recN !== null ? Math.min(100, Math.round(100/recN*4)) : 0;
+  document.getElementById('bar1').style.width = bar1pct + '%';
+  document.getElementById('barN').style.width = barNpct + '%';
+}
+
+// 初回計算
+calc();
+</script>
+</body>
+</html>
