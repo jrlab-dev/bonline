@@ -8,10 +8,22 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background: #f5f3ee; color: #2c2c2c; font-size: 14px; }
 
-.header { background: #1a1a2e; color: #fff; padding: 36px 40px; }
+.header { background: #1a1a2e; color: #fff; padding: 28px 40px; }
+.header-body { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 .header h1 { font-size: 1.8rem; letter-spacing: 0.08em; margin-bottom: 6px; }
 .header p { color: #aaa; font-size: 0.85rem; margin-bottom: 4px; }
 .header .badge { display: inline-block; background: #e8a020; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 4px; margin-top: 8px; }
+.header-btns { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+.btn-hdr {
+  padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer;
+  font-size: 0.8rem; font-weight: 700; font-family: inherit; white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.btn-hdr:hover { opacity: 0.8; }
+.btn-hdr.save    { background: #e8a020; color: #fff; }
+.btn-hdr.load    { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+.btn-hdr.reset   { background: transparent; color: #aaa; border: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; }
+.hdr-save-msg { font-size: 0.75rem; color: #e8a020; text-align: center; min-height: 1em; }
 
 .container { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
 
@@ -144,29 +156,6 @@ input[type="number"].auto {
 
 .note { font-size: 0.75rem; color: #888; margin-top: 20px; line-height: 1.7; }
 
-/* 保存ボタンバー */
-.save-bar {
-  display: flex; gap: 12px; flex-wrap: wrap;
-  background: #fff; border-radius: 12px;
-  padding: 16px 20px; margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  align-items: center;
-}
-.save-bar-label { font-size: 0.8rem; color: #888; margin-right: 4px; flex: 1 1 100%; }
-.btn-save {
-  padding: 9px 20px; border-radius: 6px; border: none; cursor: pointer;
-  font-size: 0.85rem; font-weight: 700; font-family: inherit;
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn-save:hover { opacity: 0.85; transform: translateY(-1px); }
-.btn-save:active { transform: translateY(0); }
-.btn-save.primary { background: #e8a020; color: #fff; }
-.btn-save.secondary { background: #1a1a2e; color: #fff; }
-.btn-save.danger { background: #fff; color: #c03030; border: 1.5px solid #c03030; }
-.save-msg {
-  font-size: 0.8rem; color: #1a7a2a; font-weight: 700;
-  display: none; margin-left: 8px;
-}
 
 /* 凡例 */
 .legend {
@@ -190,9 +179,19 @@ input[type="number"].auto {
 
 <div class="header">
   <a href="index.html" style="display:inline-block;color:#e8a020;font-size:0.8rem;text-decoration:none;margin-bottom:12px;letter-spacing:0.05em;">← BONLINE PROJECT トップへ戻る</a>
-  <h1>ヴィラ投資シミュレーター</h1>
-  <p>奄美大島ヴィラ事業</p>
-  <span class="badge">青字の数字を変更すると自動計算されます</span>
+  <div class="header-body">
+    <div>
+      <h1>ヴィラ投資シミュレーター</h1>
+      <p>奄美大島ヴィラ事業</p>
+      <span class="badge">青字の数字を変更すると自動計算されます</span>
+    </div>
+    <div class="header-btns">
+      <button class="btn-hdr save" onclick="saveData()">💾 この数字を保存</button>
+      <button class="btn-hdr load" onclick="loadData()">📂 保存データを反映</button>
+      <button class="btn-hdr reset" onclick="resetData()">↺ 初期値にリセット</button>
+      <div class="hdr-save-msg" id="save-msg"></div>
+    </div>
+  </div>
 </div>
 
 <div class="container">
@@ -202,13 +201,6 @@ input[type="number"].auto {
     初期値は計画モデルに基づく標準値です。実際の条件に合わせて調整してください。
   </div>
 
-  <div class="save-bar">
-    <div class="save-bar-label">入力値の管理</div>
-    <button class="btn-save primary" onclick="saveData()">💾 この数字を保存</button>
-    <button class="btn-save secondary" onclick="loadData()">📂 保存データを反映</button>
-    <button class="btn-save danger" onclick="resetData()">↺ 初期値にリセット</button>
-    <span class="save-msg" id="save-msg"></span>
-  </div>
 
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#4a90d9;"></div>青字 = 入力値（変更可）</div>
@@ -889,12 +881,10 @@ const DEFAULTS = {
   b56:0.85, b59:2.0, b60:20, b70:33
 };
 
-function showMsg(text, color) {
+function showMsg(text) {
   const el = document.getElementById('save-msg');
   el.textContent = text;
-  el.style.color = color || '#1a7a2a';
-  el.style.display = 'inline';
-  setTimeout(() => { el.style.display = 'none'; }, 2500);
+  setTimeout(() => { el.textContent = ''; }, 2500);
 }
 
 function saveData() {
@@ -904,19 +894,19 @@ function saveData() {
     if (el) data[id] = el.value;
   });
   localStorage.setItem('villa_sim_data', JSON.stringify(data));
-  showMsg('✓ 保存しました', '#1a7a2a');
+  showMsg('✓ 保存しました');
 }
 
 function loadData() {
   const raw = localStorage.getItem('villa_sim_data');
-  if (!raw) { showMsg('保存データがありません', '#c03030'); return; }
+  if (!raw) { showMsg('保存データがありません'); return; }
   const data = JSON.parse(raw);
   INPUT_IDS.forEach(id => {
     const el = document.getElementById(id);
     if (el && data[id] !== undefined) el.value = data[id];
   });
   calc();
-  showMsg('✓ 保存データを反映しました', '#1a7a2a');
+  showMsg('✓ 反映しました');
 }
 
 function resetData() {
@@ -926,7 +916,7 @@ function resetData() {
     if (el && DEFAULTS[id] !== undefined) el.value = DEFAULTS[id];
   });
   calc();
-  showMsg('✓ 初期値に戻しました', '#888');
+  showMsg('✓ リセットしました');
 }
 </script>
 </body>
