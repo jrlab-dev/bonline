@@ -144,6 +144,30 @@ input[type="number"].auto {
 
 .note { font-size: 0.75rem; color: #888; margin-top: 20px; line-height: 1.7; }
 
+/* 保存ボタンバー */
+.save-bar {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  background: #fff; border-radius: 12px;
+  padding: 16px 20px; margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  align-items: center;
+}
+.save-bar-label { font-size: 0.8rem; color: #888; margin-right: 4px; flex: 1 1 100%; }
+.btn-save {
+  padding: 9px 20px; border-radius: 6px; border: none; cursor: pointer;
+  font-size: 0.85rem; font-weight: 700; font-family: inherit;
+  transition: opacity 0.2s, transform 0.1s;
+}
+.btn-save:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-save:active { transform: translateY(0); }
+.btn-save.primary { background: #e8a020; color: #fff; }
+.btn-save.secondary { background: #1a1a2e; color: #fff; }
+.btn-save.danger { background: #fff; color: #c03030; border: 1.5px solid #c03030; }
+.save-msg {
+  font-size: 0.8rem; color: #1a7a2a; font-weight: 700;
+  display: none; margin-left: 8px;
+}
+
 /* 凡例 */
 .legend {
   display: flex; gap: 24px; flex-wrap: wrap;
@@ -176,6 +200,14 @@ input[type="number"].auto {
   <div class="hint-box">
     <strong>使い方：</strong>青字の入力欄を変えると、すべての計算が自動で更新されます。<br>
     初期値は計画モデルに基づく標準値です。実際の条件に合わせて調整してください。
+  </div>
+
+  <div class="save-bar">
+    <div class="save-bar-label">入力値の管理</div>
+    <button class="btn-save primary" onclick="saveData()">💾 この数字を保存</button>
+    <button class="btn-save secondary" onclick="loadData()">📂 保存データを反映</button>
+    <button class="btn-save danger" onclick="resetData()">↺ 初期値にリセット</button>
+    <span class="save-msg" id="save-msg"></span>
   </div>
 
   <div class="legend">
@@ -836,6 +868,66 @@ function calc() {
 
 // 初回計算
 calc();
+
+// ===== 保存・読み込み・リセット =====
+const INPUT_IDS = [
+  'b5','b6','b7','b10','b11','b12','b13','b15',
+  'b21','b22','b23','b24','b25','b26',
+  'b28','b29','b30','b31','b32','b33',
+  'b35','b36','b37','b38','b39','b40',
+  'b44','b45','b46','b47','b48','b49','b50','b51','b52','b53','b54',
+  'b56','b59','b60','b70'
+];
+
+const DEFAULTS = {
+  b5:3, b6:130, b7:90, b10:500, b11:400, b12:150, b13:350, b15:1000,
+  b21:65, b22:5.0, b23:0.7, b24:35, b25:9.0, b26:0.9,
+  b28:90, b29:3.5, b30:0.4, b31:40, b32:6.5, b33:0.65,
+  b35:100, b36:2.2, b37:0.2, b38:35, b39:3.8, b40:0.4,
+  b44:1.5, b45:5, b46:8, b47:3, b48:0.6, b49:0.15,
+  b50:30, b51:0, b52:50, b53:40, b54:10,
+  b56:0.85, b59:2.0, b60:20, b70:33
+};
+
+function showMsg(text, color) {
+  const el = document.getElementById('save-msg');
+  el.textContent = text;
+  el.style.color = color || '#1a7a2a';
+  el.style.display = 'inline';
+  setTimeout(() => { el.style.display = 'none'; }, 2500);
+}
+
+function saveData() {
+  const data = {};
+  INPUT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  });
+  localStorage.setItem('villa_sim_data', JSON.stringify(data));
+  showMsg('✓ 保存しました', '#1a7a2a');
+}
+
+function loadData() {
+  const raw = localStorage.getItem('villa_sim_data');
+  if (!raw) { showMsg('保存データがありません', '#c03030'); return; }
+  const data = JSON.parse(raw);
+  INPUT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && data[id] !== undefined) el.value = data[id];
+  });
+  calc();
+  showMsg('✓ 保存データを反映しました', '#1a7a2a');
+}
+
+function resetData() {
+  if (!confirm('すべての数字を初期値に戻します。よろしいですか？')) return;
+  INPUT_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && DEFAULTS[id] !== undefined) el.value = DEFAULTS[id];
+  });
+  calc();
+  showMsg('✓ 初期値に戻しました', '#888');
+}
 </script>
 </body>
 </html>
