@@ -803,7 +803,7 @@ function calc() {
   const margin = d41 > 0 ? Math.round((d41-d55)/d41*1000)/10 : 0;
 
   const rec1 = (d41-d55) > 0 ? Math.round(d16/(d41-d55)*10)/10 : null;
-  const recN = (d41-d55)*b5 > 0 ? Math.round(d17/((d41-d55)*b5)*10)/10 : null;
+  const recN = (d41*b5-d55*b5*b56) > 0 ? Math.round(d17/(d41*b5-d55*b5*b56)*10)/10 : null;
 
   // テーブル
   setEl('s_inv1',  fmt(d16, 0) + ' 万');
